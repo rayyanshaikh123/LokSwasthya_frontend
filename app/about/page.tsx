@@ -2,27 +2,9 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import dynamic from 'next/dynamic';
-import { useLanguage } from "./context/LanguageContext";
+import { useLanguage } from "../context/LanguageContext";
 
-const SplineModel = dynamic(() => import('./components/SplineModel'), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-[400px] flex items-center justify-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
-    </div>
-  ),
-});
-
-const ThemeToggle = dynamic(() => import("./components/ThemeToggle"), {
-  ssr: false,
-});
-
-const LanguageSwitcher = dynamic(() => import("./components/LanguageSwitcher"), {
-  ssr: false,
-});
-
-const LandingPage = () => {
+const AboutPage = () => {
   const { t } = useLanguage();
 
   return (
@@ -32,7 +14,9 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex-shrink-0">
-              <h1 className="text-2xl font-display font-bold text-teal-600 dark:text-teal-400">LokSwasthya</h1>
+              <Link href="/" className="text-2xl font-display font-bold text-teal-600 dark:text-teal-400">
+                LokSwasthya
+              </Link>
             </div>
             <div className="hidden md:flex items-center space-x-4">
               <Link href="/" className="text-gray-700 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 px-3 py-2 rounded-md text-sm font-medium">
@@ -42,16 +26,14 @@ const LandingPage = () => {
                 {t('nav.voiceAssistant')}
               </Link>
               <Link href="/about" className="text-gray-700 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 px-3 py-2 rounded-md text-sm font-medium">
-                {t('About Us')}
+                {t('nav.aboutUs')}
               </Link>
-              <LanguageSwitcher />
-              <ThemeToggle />
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* About Section */}
       <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
@@ -59,86 +41,50 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="text-4xl sm:text-5xl md:text-6xl font-display font-bold text-gray-900 dark:text-white mb-6"
+              className="text-4xl sm:text-5xl md:text-6xl font-display font-bold text-gray-900 dark:text-white mb-8"
             >
-              {t('hero.title')}
+              {t('about.title')}
             </motion.h1>
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto"
+              className="text-xl text-gray-600 dark:text-gray-300 mb-12 max-w-3xl mx-auto"
             >
-              {t('hero.subtitle')}
+              {t('about.description')}
             </motion.p>
-            <motion.div
+            
+            <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
+              className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12"
             >
-              <Link 
-                href="/voice-assistant"
-                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-600 transition-colors"
-              >
-                {t('hero.tryButton')}
-              </Link>
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                <h3 className="text-2xl font-display font-semibold text-gray-900 dark:text-white mb-4">{t('about.missionTitle')}</h3>
+                <p className="text-lg text-gray-600 dark:text-gray-300">
+                  {t('about.missionDescription')}
+                </p>
+              </div>
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                <h3 className="text-2xl font-display font-semibold text-gray-900 dark:text-white mb-4">{t('about.visionTitle')}</h3>
+                <p className="text-lg text-gray-600 dark:text-gray-300">
+                  {t('about.visionDescription')}
+                </p>
+              </div>
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                <h3 className="text-2xl font-display font-semibold text-gray-900 dark:text-white mb-4">{t('about.teamTitle')}</h3>
+                <p className="text-lg text-gray-600 dark:text-gray-300">
+                  {t('about.teamDescription')}
+                </p>
+              </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* 3D Model Section */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="relative h-[600px] w-full">
-            <SplineModel />
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-display font-bold text-gray-900 dark:text-white">{t('features.title')}</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-14 column-gap-15">
-            <div>
-              <FeatureCard 
-                title="Symptom Check"
-                description="Users describe their symptoms by speaking or typing in their local language. The AI analyzes input, asks relevant follow-up questions, and classifies the case into three levels: Emergency (e.g., chest pain), Urgent (needs doctor soon), or Mild (self-manageable). The feature is voice-first and localized, making it similar to commercial bots but adapted for rural use."
-                icon="🎤"
-              />
-            </div>
-            <div>
-              <FeatureCard 
-                title="Home Care Advice"
-                description="For mild cases, the app recommends home remedies and over-the-counter (OTC) medicines, with dosage instructions. For example, it may suggest Paracetamol, hydration, and rest for fever. The advice is delivered in simple text and audio in the user's language. This ensures accessibility for low-literacy users and supports safe self-care without needing immediate clinical help."
-                icon="🏠"
-              />
-            </div>
-            <div>
-              <FeatureCard 
-                title="Health Education"
-                description="The app provides offline audio/video modules on key health topics like hygiene, nutrition, maternal care, vaccinations, and chronic disease prevention. These are designed with local language narration, pictures, and simple explanations. Additionally, it sends periodic SMS reminders for vaccination, medication, or follow-up care, supporting continuous learning and behavior change."
-                icon="📚"
-              />
-            </div>
-            <div>
-              <FeatureCard
-                title="Mental Health Support"
-                description="Users can express emotions via voice or text journaling. The AI offers coping tips, breathing exercises, and mental wellness support based on input. Regular 'mood check-ins' use short stress and anxiety screening tools. Based on the user's state, it may suggest mindfulness routines or offer to book a counseling session via voice appointment, ensuring emotional care is also prioritized."
-                icon="🧠"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-    
-
       {/* Footer */}
-      <footer className="bg-gray-50 dark:bg-gray-900 py-12">
+      <footer className="bg-gray-50 dark:bg-gray-800 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
             <div>
@@ -162,7 +108,7 @@ const LandingPage = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="#about" className="text-gray-600 dark:text-gray-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
+                  <Link href="/about" className="text-gray-600 dark:text-gray-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
                     {t('footer.aboutUs')}
                   </Link>
                 </li>
@@ -182,7 +128,6 @@ const LandingPage = () => {
               </ul>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mt-6 mb-4">{t('footer.followUs')}</h3>
               <div className="flex justify-center md:justify-start space-x-4">
-                {/* Social Media Icons */}
                 <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
                   <i className="fab fa-facebook-f"></i>
                 </a>
@@ -207,24 +152,4 @@ const LandingPage = () => {
   );
 };
 
-const FeatureCard = ({ title, description, icon }: { title: string; description: string; icon: string }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      viewport={{ once: true }}
-      className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md transition-shadow duration-300 relative flex flex-col justify-between"
-      style={{
-        minHeight: '280px',
-        minWidth: '420px',
-      }}
-    >
-      <div className="text-4xl mb-4">{icon}</div>
-      <h3 className="text-xl font-display font-semibold text-gray-900 dark:text-white mb-2">{title}</h3>
-      <p className="text-base text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-5 overflow-hidden">{description}</p>
-    </motion.div>
-  );
-};
-
-export default LandingPage;
+export default AboutPage; 
