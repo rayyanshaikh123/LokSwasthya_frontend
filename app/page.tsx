@@ -42,7 +42,7 @@ const LandingPage = () => {
                 {t('nav.voiceAssistant')}
               </Link>
               <Link href="/about" className="text-gray-700 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 px-3 py-2 rounded-md text-sm font-medium">
-                {t('About Us')}
+                {t('nav.aboutUs')}
               </Link>
               <LanguageSwitcher />
               <ThemeToggle />
@@ -96,6 +96,25 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Call to Action Section */}
+      <section className="py-20 bg-teal-600 dark:bg-teal-700 text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl sm:text-4xl font-display font-bold mb-4">
+            {t('accessibility.callToAction.title')}
+          </h2>
+          <p className="text-xl mb-8">
+            {t('accessibility.callToAction.description')}
+          </p>
+          <a 
+            href="tel:09513886363"
+            className="inline-flex items-center px-8 py-4 border border-white text-lg font-medium rounded-md text-teal-600 bg-white hover:bg-teal-50 dark:bg-gray-800 dark:text-teal-400 dark:hover:bg-gray-700 transition-colors shadow-lg"
+          >
+            <i className="fas fa-phone-alt mr-3"></i>
+            {t('accessibility.callToAction.callNow')} 09513886363
+          </a>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="py-20 bg-gray-50 dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -105,29 +124,29 @@ const LandingPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-14 column-gap-15">
             <div>
               <FeatureCard 
-                title="Symptom Check"
-                description="Users describe their symptoms by speaking or typing in their local language. The AI analyzes input, asks relevant follow-up questions, and classifies the case into three levels: Emergency (e.g., chest pain), Urgent (needs doctor soon), or Mild (self-manageable). The feature is voice-first and localized, making it similar to commercial bots but adapted for rural use."
+                title={t('features.symptomCheck.title')}
+                description={t('features.symptomCheck.description')}
                 icon="🎤"
               />
             </div>
             <div>
               <FeatureCard 
-                title="Home Care Advice"
-                description="For mild cases, the app recommends home remedies and over-the-counter (OTC) medicines, with dosage instructions. For example, it may suggest Paracetamol, hydration, and rest for fever. The advice is delivered in simple text and audio in the user's language. This ensures accessibility for low-literacy users and supports safe self-care without needing immediate clinical help."
+                title={t('features.homeCareAdvice.title')}
+                description={t('features.homeCareAdvice.description')}
                 icon="🏠"
               />
             </div>
             <div>
               <FeatureCard 
-                title="Health Education"
-                description="The app provides offline audio/video modules on key health topics like hygiene, nutrition, maternal care, vaccinations, and chronic disease prevention. These are designed with local language narration, pictures, and simple explanations. Additionally, it sends periodic SMS reminders for vaccination, medication, or follow-up care, supporting continuous learning and behavior change."
+                title={t('features.healthEducation.title')}
+                description={t('features.healthEducation.description')}
                 icon="📚"
               />
             </div>
             <div>
               <FeatureCard
-                title="Mental Health Support"
-                description="Users can express emotions via voice or text journaling. The AI offers coping tips, breathing exercises, and mental wellness support based on input. Regular 'mood check-ins' use short stress and anxiety screening tools. Based on the user's state, it may suggest mindfulness routines or offer to book a counseling session via voice appointment, ensuring emotional care is also prioritized."
+                title={t('features.mentalHealthSupport.title')}
+                description={t('features.mentalHealthSupport.description')}
                 icon="🧠"
               />
             </div>

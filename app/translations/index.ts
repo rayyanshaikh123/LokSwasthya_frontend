@@ -66,7 +66,7 @@ export const translations = {
       phone: 'Phone:',
       address: 'Address:',
       emailAddress: 'info@lokswasthya.com',
-      phoneNumber: '+91 12345 67890',
+      phoneNumber: '09513886363',
       fullAddress: '123 Healthway, Wellness City, India',
       followUs: 'Follow Us',
     },
@@ -87,6 +87,11 @@ export const translations = {
       theme: 'Theme',
       light: 'Light',
       dark: 'Dark',
+      callToAction: {
+        title: 'Need Immediate Assistance?',
+        description: 'Call our health agent directly for quick support.',
+        callNow: 'Call Now',
+      },
     },
   },
   hi: {
@@ -154,7 +159,7 @@ export const translations = {
       phone: 'फोन:',
       address: 'पता:',
       emailAddress: 'info@lokswasthya.com',
-      phoneNumber: '+91 12345 67890',
+      phoneNumber: '09513886363',
       fullAddress: '123 हेल्थवे, वेलनेस सिटी, भारत',
       followUs: 'हमें फॉलो करें',
     },
@@ -175,6 +180,11 @@ export const translations = {
       theme: 'थीम',
       light: 'लाइट',
       dark: 'डार्क',
+      callToAction: {
+        title: 'तत्काल सहायता चाहिए?',
+        description: 'त्वरित सहायता के लिए सीधे हमारे स्वास्थ्य एजेंट को कॉल करें।',
+        callNow: 'अभी कॉल करें',
+      },
     },
   },
 }; 
