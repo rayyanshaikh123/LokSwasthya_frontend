@@ -1,180 +1,160 @@
 "use client";
 
-import { CloseIcon } from "@/components/CloseIcon";
-import { NoAgentNotification } from "@/components/NoAgentNotification";
-import TranscriptionView from "@/components/TranscriptionView";
-import {
-  BarVisualizer,
-  DisconnectButton,
-  RoomAudioRenderer,
-  RoomContext,
-  VideoTrack,
-  VoiceAssistantControlBar,
-  useVoiceAssistant,
-} from "@livekit/components-react";
-import { AnimatePresence, motion } from "framer-motion";
-import { Room, RoomEvent } from "livekit-client";
-import { useCallback, useEffect, useState } from "react";
-import type { ConnectionDetails } from "./api/connection-details/route";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import dynamic from 'next/dynamic';
+import { useLanguage } from "./context/LanguageContext";
 
-export default function Page() {
-  const [room] = useState(new Room());
+const SplineModel = dynamic(() => import('./components/SplineModel'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[400px] flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
+    </div>
+  ),
+});
 
-  const onConnectButtonClicked = useCallback(async () => {
-    // Generate room connection details, including:
-    //   - A random Room name
-    //   - A random Participant name
-    //   - An Access Token to permit the participant to join the room
-    //   - The URL of the LiveKit server to connect to
-    //
-    // In real-world application, you would likely allow the user to specify their
-    // own participant name, and possibly to choose from existing rooms to join.
+const ThemeToggle = dynamic(() => import("./components/ThemeToggle"), {
+  ssr: false,
+});
 
-    const url = new URL(
-      process.env.NEXT_PUBLIC_CONN_DETAILS_ENDPOINT ?? "/api/connection-details",
-      window.location.origin
-    );
-    const response = await fetch(url.toString());
-    const connectionDetailsData: ConnectionDetails = await response.json();
+const LanguageSwitcher = dynamic(() => import("./components/LanguageSwitcher"), {
+  ssr: false,
+});
 
-    await room.connect(connectionDetailsData.serverUrl, connectionDetailsData.participantToken);
-    await room.localParticipant.setMicrophoneEnabled(true);
-  }, [room]);
-
-  useEffect(() => {
-    room.on(RoomEvent.MediaDevicesError, onDeviceFailure);
-
-    return () => {
-      room.off(RoomEvent.MediaDevicesError, onDeviceFailure);
-    };
-  }, [room]);
+export default function LandingPage() {
+  const { t } = useLanguage();
 
   return (
-    <main data-lk-theme="default" className="h-full grid content-center bg-[var(--lk-bg)]">
-      <RoomContext.Provider value={room}>
-        <div className="lk-room-container max-w-[1024px] w-[90vw] mx-auto max-h-[90vh]">
-          <SimpleVoiceAssistant onConnectButtonClicked={onConnectButtonClicked} />
+    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16 items-center">
+            <div className="flex-shrink-0">
+              <h1 className="text-2xl font-display font-bold text-teal-600 dark:text-teal-400">LokSwasthya</h1>
+            </div>
+            <div className="hidden md:flex items-center space-x-4">
+              <Link href="/" className="text-gray-700 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 px-3 py-2 rounded-md text-sm font-medium">
+                {t('nav.home')}
+              </Link>
+              <Link href="/voice-assistant" className="text-gray-700 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 px-3 py-2 rounded-md text-sm font-medium">
+                {t('nav.voiceAssistant')}
+              </Link>
+              <LanguageSwitcher />
+              <ThemeToggle />
+            </div>
+          </div>
         </div>
-      </RoomContext.Provider>
-    </main>
-  );
-}
+      </nav>
 
-function SimpleVoiceAssistant(props: { onConnectButtonClicked: () => void }) {
-  const { state: agentState } = useVoiceAssistant();
-
-  return (
-    <>
-      <AnimatePresence mode="wait">
-        {agentState === "disconnected" ? (
-          <motion.div
-            key="disconnected"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.3, ease: [0.09, 1.04, 0.245, 1.055] }}
-            className="grid items-center justify-center h-full"
-          >
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-              className="uppercase px-4 py-2 bg-white text-black rounded-md"
-              onClick={() => props.onConnectButtonClicked()}
+      {/* Hero Section */}
+      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center">
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="text-4xl sm:text-5xl md:text-6xl font-display font-bold text-gray-900 dark:text-white mb-6"
             >
-              Start a conversation
-            </motion.button>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="connected"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3, ease: [0.09, 1.04, 0.245, 1.055] }}
-            className="flex flex-col items-center gap-4 h-full"
-          >
-            <AgentVisualizer />
-            <div className="flex-1 w-full">
-              <TranscriptionView />
-            </div>
-            <div className="w-full">
-              <ControlBar onConnectButtonClicked={props.onConnectButtonClicked} />
-            </div>
-            <RoomAudioRenderer />
-            <NoAgentNotification state={agentState} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
-}
+              {t('hero.title')}
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto"
+            >
+              {t('hero.subtitle')}
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              <Link 
+                href="/voice-assistant"
+                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-600 transition-colors"
+              >
+                {t('hero.tryButton')}
+              </Link>
+            </motion.div>
+          </div>
+        </div>
+      </section>
 
-function AgentVisualizer() {
-  const { state: agentState, videoTrack, audioTrack } = useVoiceAssistant();
+      {/* 3D Model Section */}
+      <section className="py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="relative h-[600px] w-full">
+            <SplineModel />
+          </div>
+        </div>
+      </section>
 
-  if (videoTrack) {
-    return (
-      <div className="h-[512px] w-[512px] rounded-lg overflow-hidden">
-        <VideoTrack trackRef={videoTrack} />
-      </div>
-    );
-  }
-  return (
-    <div className="h-[300px] w-full">
-      <BarVisualizer
-        state={agentState}
-        barCount={5}
-        trackRef={audioTrack}
-        className="agent-visualizer"
-        options={{ minHeight: 24 }}
-      />
+      {/* Features Section */}
+      <section className="py-20 bg-gray-50 dark:bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-display font-bold text-gray-900 dark:text-white">{t('features.title')}</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <FeatureCard 
+              title={t('features.voiceInteraction.title')}
+              description={t('features.voiceInteraction.description')}
+              icon="🎤"
+            />
+            <FeatureCard 
+              title={t('features.instantAnswers.title')}
+              description={t('features.instantAnswers.description')}
+              icon="⚡"
+            />
+            <FeatureCard 
+              title={t('features.availability.title')}
+              description={t('features.availability.description')}
+              icon="🌙"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-display font-bold text-gray-900 dark:text-white mb-8">{t('about.title')}</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              {t('about.description')}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-50 dark:bg-gray-800 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-gray-500 dark:text-gray-400">{t('footer.copyright')}</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
 
-function ControlBar(props: { onConnectButtonClicked: () => void }) {
-  const { state: agentState } = useVoiceAssistant();
-
+function FeatureCard({ title, description, icon }: { title: string; description: string; icon: string }) {
   return (
-    <div className="relative h-[60px]">
-      <AnimatePresence>
-        {agentState === "disconnected" && (
-          <motion.button
-            initial={{ opacity: 0, top: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0, top: "-10px" }}
-            transition={{ duration: 1, ease: [0.09, 1.04, 0.245, 1.055] }}
-            className="uppercase absolute left-1/2 -translate-x-1/2 px-4 py-2 bg-white text-black rounded-md"
-            onClick={() => props.onConnectButtonClicked()}
-          >
-            Start a conversation
-          </motion.button>
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {agentState !== "disconnected" && agentState !== "connecting" && (
-          <motion.div
-            initial={{ opacity: 0, top: "10px" }}
-            animate={{ opacity: 1, top: 0 }}
-            exit={{ opacity: 0, top: "-10px" }}
-            transition={{ duration: 0.4, ease: [0.09, 1.04, 0.245, 1.055] }}
-            className="flex h-8 absolute left-1/2 -translate-x-1/2  justify-center"
-          >
-            <VoiceAssistantControlBar controls={{ leave: false }} />
-            <DisconnectButton>
-              <CloseIcon />
-            </DisconnectButton>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-function onDeviceFailure(error: Error) {
-  console.error(error);
-  alert(
-    "Error acquiring camera or microphone permissions. Please make sure you grant the necessary permissions in your browser and reload the tab"
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      viewport={{ once: true }}
+      className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+    >
+      <div className="text-4xl mb-4">{icon}</div>
+      <h3 className="text-xl font-display font-semibold text-gray-900 dark:text-white mb-2">{title}</h3>
+      <p className="text-gray-600 dark:text-gray-300">{description}</p>
+    </motion.div>
   );
 }

@@ -1,15 +1,23 @@
 import "@livekit/components-styles";
-import { Metadata } from "next";
-import { Public_Sans } from "next/font/google";
+import type { Metadata } from "next";
+import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
+import { LanguageProvider } from "./context/LanguageContext";
 
-const publicSans400 = Public_Sans({
-  weight: "400",
+const inter = Inter({ 
   subsets: ["latin"],
+  variable: '--font-inter',
+});
+
+const poppins = Poppins({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-poppins',
 });
 
 export const metadata: Metadata = {
-  title: "Voice Assistant",
+  title: "LokSwasthya - AI Health Assistant",
+  description: "Experience personalized healthcare guidance through natural conversations with our advanced AI assistant.",
 };
 
 export default function RootLayout({
@@ -18,8 +26,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`h-full ${publicSans400.className}`}>
-      <body className="h-full">{children}</body>
+    <html lang="en" className={`${inter.variable} ${poppins.variable} font-sans`} suppressHydrationWarning>
+      <body className="h-full">
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
+      </body>
     </html>
   );
 }
