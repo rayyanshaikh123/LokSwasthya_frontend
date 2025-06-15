@@ -12,7 +12,6 @@ import {
   VoiceAssistantControlBar,
   useVoiceAssistant,
   useChat,
-  Chat,
   useConnectionState,
 } from "@livekit/components-react";
 import { AnimatePresence, motion } from "framer-motion";
