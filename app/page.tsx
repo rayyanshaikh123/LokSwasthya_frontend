@@ -60,7 +60,7 @@ const LandingPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
               className="text-4xl sm:text-5xl md:text-6xl font-display font-bold text-gray-900 dark:text-white mb-6"
-            >
+          >
               {t('hero.title')}
             </motion.h1>
             <motion.p 
@@ -71,9 +71,9 @@ const LandingPage = () => {
             >
               {t('hero.subtitle')}
             </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
               <Link 
@@ -83,8 +83,8 @@ const LandingPage = () => {
                 {t('hero.tryButton')}
               </Link>
             </motion.div>
-          </div>
-        </div>
+            </div>
+            </div>
       </section>
 
       {/* 3D Model Section */}
@@ -120,6 +120,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-display font-bold text-gray-900 dark:text-white">{t('features.title')}</h2>
+
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-14 column-gap-15">
             <div>
@@ -150,6 +151,7 @@ const LandingPage = () => {
                 icon="🧠"
               />
             </div>
+
           </div>
         </div>
       </section>
@@ -228,7 +230,7 @@ const LandingPage = () => {
 
 const FeatureCard = ({ title, description, icon }: { title: string; description: string; icon: string }) => {
   return (
-    <motion.div
+          <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -241,8 +243,10 @@ const FeatureCard = ({ title, description, icon }: { title: string; description:
     >
       <div className="text-4xl mb-4">{icon}</div>
       <h3 className="text-xl font-display font-semibold text-gray-900 dark:text-white mb-2">{title}</h3>
+
       <p className="text-base text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-5 overflow-hidden">{description}</p>
     </motion.div>
+
   );
 };
 
