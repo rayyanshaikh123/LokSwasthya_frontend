@@ -1,6 +1,49 @@
 export type Language = 'en' | 'hi';
 
-export const translations = {
+export type TranslationContent = string | { [key: string]: TranslationContent };
+
+export type TranslationKeys = {
+  nav: {
+    home: string;
+    voiceAssistant: string;
+    aboutUs: string;
+    backToHome: string;
+  };
+  hero: {
+    title: string;
+    subtitle: string;
+    tryButton: string;
+  };
+  features: {
+    title: string;
+    voiceInteraction: TranslationContent; 
+    instantAnswers: TranslationContent;
+    availability: TranslationContent;
+    symptomCheck: TranslationContent;
+    homeCareAdvice: TranslationContent;
+    healthEducation: TranslationContent;
+    mentalHealthSupport: TranslationContent;
+  };
+  about: TranslationContent;
+  footer: TranslationContent;
+  voiceAssistant: TranslationContent & { 
+    title: string;
+    subtitle: string;
+    startButton: string;
+    disconnectButton: string;
+    connecting: string;
+    listening: string;
+    processing: string;
+    speaking: string;
+    error: string;
+    noAgent: string;
+    inputPlaceholder: string; 
+    inputAriaLabel: string; 
+  };
+  accessibility: TranslationContent;
+};
+
+export const translations: Record<Language, TranslationKeys> = {
   en: {
     nav: {
       home: 'Home',
@@ -81,6 +124,8 @@ export const translations = {
       speaking: 'Speaking...',
       error: 'Error occurred. Please try again.',
       noAgent: 'No agent available at the moment. Please try again later.',
+      inputPlaceholder: 'Enter your message...',
+      inputAriaLabel: 'Enter your message',
     },
     accessibility: {
       language: 'Language',
@@ -174,6 +219,8 @@ export const translations = {
       speaking: 'बोल रहा है...',
       error: 'त्रुटि हुई। कृपया पुनः प्रयास करें।',
       noAgent: 'वर्तमान में कोई एजेंट उपलब्ध नहीं है। कृपया बाद में पुनः प्रयास करें।',
+      inputPlaceholder: 'Enter your message...',
+      inputAriaLabel: 'Enter your message',
     },
     accessibility: {
       language: 'भाषा',
