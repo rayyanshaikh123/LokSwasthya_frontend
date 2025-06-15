@@ -11,6 +11,9 @@ import {
   VideoTrack,
   VoiceAssistantControlBar,
   useVoiceAssistant,
+  useChat,
+  Chat,
+  useConnectionState,
 } from "@livekit/components-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Room, RoomEvent } from "livekit-client";
@@ -31,6 +34,9 @@ const LanguageSwitcher = dynamic(() => import("../components/LanguageSwitcher"),
 export default function VoiceAssistantPage() {
   const [room] = useState(new Room());
   const { t } = useLanguage();
+  const connectionState = useConnectionState(room);
+
+  console.log('Current LiveKit Connection State:', connectionState);
 
   const onConnectButtonClicked = useCallback(async () => {
     const url = new URL(
@@ -90,19 +96,79 @@ export default function VoiceAssistantPage() {
 
       <div className="container mx-auto px-6 py-8 pt-24">
         <RoomContext.Provider value={room}>
-          <div className="max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-xl"
-            >
-              <SimpleVoiceAssistant onConnectButtonClicked={onConnectButtonClicked} />
-            </motion.div>
+          <div className="flex flex-col md:flex-row gap-8 max-w-6xl mx-auto">
+            {/* Left: Chat log and input */}
+            <AnimatePresence mode="wait">
+              {connectionState !== "disconnected" && (
+                <div className="w-full md:w-80 min-w-0 max-w-xs flex flex-col bg-gray-50 dark:bg-gray-800 rounded-lg p-4 shadow md:h-[600px] h-auto overflow-y-auto overflow-x-hidden flex-shrink-0 box-border">
+                  <h3 className="font-semibold mb-2 text-teal-700 dark:text-teal-300">Chat Log</h3>
+                  <ChatLogSection />
+                  <div className="mt-auto">
+                    <CustomChat />
+                  </div>
+                </div>
+              )}
+            </AnimatePresence>
+            {/* Right: Assistant card */}
+            <div className="flex-1 flex flex-col">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-xl h-full md:h-[600px] flex flex-col"
+              >
+                <SimpleVoiceAssistant onConnectButtonClicked={onConnectButtonClicked} />
+              </motion.div>
+            </div>
           </div>
         </RoomContext.Provider>
       </div>
     </main>
+  );
+}
+
+function CustomChat() {
+  const { send } = useChat();
+  const [newMessage, setNewMessage] = useState('');
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' && newMessage.trim()) {
+      send(newMessage);
+      setNewMessage('');
+    }
+  };
+
+  return (
+    <div className="mt-4 flex gap-2">
+      <input
+        type="text"
+        value={newMessage}
+        onChange={(e) => setNewMessage(e.target.value)}
+        onKeyDown={handleKeyDown}
+        className="flex-1 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors"
+        placeholder="Type your message and press Enter..."
+        aria-label="Type your message"
+      />
+    </div>
+  );
+}
+
+function ChatLogSection() {
+  const { chatMessages } = useChat();
+
+  return (
+    <div className="mb-4 max-h-48 overflow-y-auto bg-gray-50 dark:bg-gray-800 rounded p-4 shadow">
+      <h3 className="font-semibold mb-2 text-teal-700 dark:text-teal-300">Chat Log</h3>
+      {chatMessages.length === 0 && (
+        <div className="text-gray-400 text-sm">No messages yet.</div>
+      )}
+      {chatMessages.map((msg, idx) => (
+        <div key={idx} className="mb-1 text-sm">
+          <span className="font-bold text-teal-600 dark:text-teal-400">Patient:</span>{" "}
+          <span>{msg.message}</span>
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -153,7 +219,7 @@ function SimpleVoiceAssistant(props: { onConnectButtonClicked: () => void }) {
             className="flex flex-col items-center gap-6"
           >
             <AgentVisualizer />
-            <div className="w-full pb-24">
+            <div className="w-full mb-4">
               <TranscriptionView />
             </div>
             <div className="w-full">
