@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { Language, translations } from '../translations';
+import { Language, translations, TranslationContent } from '../translations';
 
 type LanguageContextType = {
   language: Language;
@@ -32,19 +32,19 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('language', lang);
   };
 
-  const t = (key: string) => {
+  const t = (key: string): string => {
     const keys = key.split('.');
-    let value: any = translations[language];
+    let currentPath: TranslationContent = translations[language];
     
     for (const k of keys) {
-      if (value && typeof value === 'object') {
-        value = value[k];
+      if (typeof currentPath === 'object' && currentPath !== null && k in currentPath) {
+        currentPath = currentPath[k];
       } else {
-        return key;
+        return key; // Return the key if path is invalid or translation is missing
       }
     }
     
-    return typeof value === 'string' ? value : key;
+    return typeof currentPath === 'string' ? currentPath : key;
   };
 
   return (
